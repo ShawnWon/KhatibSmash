@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Default embedded mock dataset
  * Available globally as window.embeddedMockData
  */

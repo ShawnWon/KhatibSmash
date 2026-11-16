@@ -29,28 +29,35 @@
           </div>
           <div>
             <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">KhatibSmash</span>
-            <span class="text-xs text-slate-400 block -mt-1 font-medium">Table Tennis Rating League</span>
+            <span class="text-xs text-slate-400 block -mt-1 font-medium" data-i18n="appSubtitle">Table Tennis Rating League</span>
           </div>
         </div>
 
         <!-- Navigation Tabs -->
         <nav class="hidden md:flex space-x-1">
           <button onclick="app.navigate('leaderboard')" id="nav-leaderboard" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-teal-400 bg-teal-500/10">
-            <i class="fa-solid fa-ranking-star"></i> Leaderboard
+            <i class="fa-solid fa-ranking-star"></i> <span data-i18n="navLeaderboard">Leaderboard</span>
           </button>
           <button onclick="app.navigate('tournaments')" id="nav-tournaments" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
-            <i class="fa-solid fa-trophy"></i> Tournaments & Brackets
+            <i class="fa-solid fa-trophy"></i> <span data-i18n="navTournaments">Tournaments & Brackets</span>
           </button>
           <button onclick="app.navigate('h2h')" id="nav-h2h" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
-            <i class="fa-solid fa-handshake-simple"></i> Head to Head
+            <i class="fa-solid fa-handshake-simple"></i> <span data-i18n="navH2H">Head to Head</span>
           </button>
         </nav>
 
-        <!-- Right Action Button: Supabase Settings -->
-        <div class="flex items-center space-x-3">
-          <button onclick="app.openSettingsModal()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-2 transition">
+        <!-- Right Action Button: Supabase Settings & Language Toggle -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <!-- Language Toggle Pill -->
+          <div class="inline-flex rounded-lg p-0.5 bg-slate-800 border border-slate-700 text-xs font-semibold">
+            <button onclick="app.setLanguage('en')" id="lang-btn-en" class="px-2.5 py-1 rounded-md transition-all text-teal-400 bg-teal-500/20 font-bold">EN</button>
+            <button onclick="app.setLanguage('cn')" id="lang-btn-cn" class="px-2.5 py-1 rounded-md transition-all text-slate-400 hover:text-white">中文</button>
+          </div>
+
+          <!-- Supabase Config Button -->
+          <button onclick="app.openSettingsModal()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5 transition">
             <i class="fa-solid fa-database text-teal-400"></i>
-            <span id="backend-status-badge">Source: Demo Data</span>
+            <span id="backend-status-badge" class="hidden sm:inline">Source: Demo Data</span>
             <i class="fa-solid fa-gear text-slate-400"></i>
           </button>
         </div>
@@ -60,13 +67,13 @@
     <!-- Mobile Nav Bar -->
     <div class="flex md:hidden border-t border-slate-800 bg-slate-900/95 px-3 py-2 justify-around text-xs">
       <button onclick="app.navigate('leaderboard')" class="flex flex-col items-center gap-1 text-teal-400">
-        <i class="fa-solid fa-ranking-star"></i> Ranking
+        <i class="fa-solid fa-ranking-star"></i> <span data-i18n="navLeaderboard">Ranking</span>
       </button>
       <button onclick="app.navigate('tournaments')" class="flex flex-col items-center gap-1 text-slate-400">
-        <i class="fa-solid fa-trophy"></i> Tournaments
+        <i class="fa-solid fa-trophy"></i> <span data-i18n="navTournaments">Tournaments</span>
       </button>
       <button onclick="app.navigate('h2h')" class="flex flex-col items-center gap-1 text-slate-400">
-        <i class="fa-solid fa-handshake-simple"></i> H2H
+        <i class="fa-solid fa-handshake-simple"></i> <span data-i18n="navH2H">H2H</span>
       </button>
     </div>
   </header>
@@ -81,10 +88,10 @@
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-semibold mb-2">
-              <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Official Community Standings
+              <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> <span data-i18n="badgeOfficial">Official Community Standings</span>
             </div>
-            <h1 class="text-2xl md:text-3xl font-extrabold text-white">Khatib Table Tennis Community Leaderboard</h1>
-            <p class="text-sm text-slate-400 mt-1">USATT/Kaiqiu Rating System · Dynamic Match-by-Match Exchange · Real Skill Reflection</p>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="lbTitle">Khatib Table Tennis Community Leaderboard</h1>
+            <p class="text-sm text-slate-400 mt-1" data-i18n="lbSubtitle">USATT / Kaiqiu Rating System · Dynamic Match-by-Match Exchange · Real Skill Reflection</p>
           </div>
           <!-- Filter / Search -->
           <div class="flex items-center gap-3">
@@ -107,14 +114,14 @@
           <table class="w-full text-left text-sm">
             <thead class="bg-slate-800/80 text-slate-400 uppercase text-xs font-semibold">
               <tr>
-                <th class="px-5 py-3.5 text-center w-16">Rank</th>
-                <th class="px-5 py-3.5">Player</th>
-                <th class="px-5 py-3.5 text-center hidden md:table-cell">Play Style</th>
-                <th class="px-5 py-3.5 text-center">Rating</th>
-                <th class="px-5 py-3.5 text-center">Peak</th>
-                <th class="px-5 py-3.5 text-center">Matches (W/L)</th>
-                <th class="px-5 py-3.5 text-center">Win Rate</th>
-                <th class="px-5 py-3.5 text-center">Action</th>
+                <th class="px-5 py-3.5 text-center w-16" data-i18n="colRank">Rank</th>
+                <th class="px-5 py-3.5" data-i18n="colPlayer">Player</th>
+                <th class="px-5 py-3.5 text-center hidden md:table-cell" data-i18n="colStyle">Play Style</th>
+                <th class="px-5 py-3.5 text-center" data-i18n="colRating">Rating</th>
+                <th class="px-5 py-3.5 text-center" data-i18n="colPeak">Peak</th>
+                <th class="px-5 py-3.5 text-center" data-i18n="colMatches">Matches (W/L)</th>
+                <th class="px-5 py-3.5 text-center" data-i18n="colWinRate">Win Rate</th>
+                <th class="px-5 py-3.5 text-center" data-i18n="colAction">Action</th>
               </tr>
             </thead>
             <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 font-medium">
@@ -130,7 +137,7 @@
       <!-- Tournament Selection Bar -->
       <div class="glass-card rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Select Tournament Edition</label>
+          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1" data-i18n="selectEdition">Select Tournament Edition</label>
           <select id="tournament-select" onchange="app.changeTournament()" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-teal-500 font-medium">
             <!-- Dynamically populated -->
           </select>
@@ -143,13 +150,13 @@
       <!-- Sub-tabs within Tournament -->
       <div class="flex border-b border-slate-800 space-x-6 text-sm font-semibold">
         <button onclick="app.setTournamentTab('results')" id="ttab-results" class="pb-3 border-b-2 border-teal-400 text-teal-400 flex items-center gap-2">
-          <i class="fa-solid fa-chart-line"></i> Standings & Rating Deltas
+          <i class="fa-solid fa-chart-line"></i> <span data-i18n="tabStandings">Standings & Rating Deltas</span>
         </button>
         <button onclick="app.setTournamentTab('groups')" id="ttab-groups" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
-          <i class="fa-solid fa-table-cells"></i> Group Stage Matrix
+          <i class="fa-solid fa-table-cells"></i> <span data-i18n="tabGroups">Group Stage Matrix</span>
         </button>
         <button onclick="app.setTournamentTab('knockout')" id="ttab-knockout" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
-          <i class="fa-solid fa-sitemap"></i> Knockout Bracket
+          <i class="fa-solid fa-sitemap"></i> <span data-i18n="tabKnockout">Knockout Bracket</span>
         </button>
       </div>
 
@@ -158,19 +165,19 @@
         <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
           <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
             <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-medal text-amber-400"></i> Final Tournament Standings & Rating Settlement
+              <i class="fa-solid fa-medal text-amber-400"></i> <span data-i18n="finalResultsTitle">Final Tournament Standings & Rating Settlement</span>
             </h3>
-            <span class="text-xs text-slate-400">USATT Formula Settled</span>
+            <span class="text-xs text-slate-400" data-i18n="finalResultsSub">USATT Formula Settled</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead class="bg-slate-800/80 text-slate-400 uppercase text-xs">
                 <tr>
-                  <th class="px-5 py-3 text-center">Place</th>
-                  <th class="px-5 py-3">Player</th>
-                  <th class="px-5 py-3 text-center">Initial Rating</th>
-                  <th class="px-5 py-3 text-center">Change (Δ)</th>
-                  <th class="px-5 py-3 text-center">New Rating</th>
+                  <th class="px-5 py-3 text-center" data-i18n="colPlace">Place</th>
+                  <th class="px-5 py-3" data-i18n="colPlayer">Player</th>
+                  <th class="px-5 py-3 text-center" data-i18n="colInitialRating">Initial Rating</th>
+                  <th class="px-5 py-3 text-center" data-i18n="colRatingChange">Change (Δ)</th>
+                  <th class="px-5 py-3 text-center" data-i18n="colNewRating">New Rating</th>
                 </tr>
               </thead>
               <tbody id="tournament-results-tbody" class="divide-y divide-slate-800/60">
@@ -199,13 +206,13 @@
     <!-- VIEW 3: HEAD TO HEAD (H2H) -->
     <section id="view-h2h" class="space-y-6 hidden">
       <div class="glass-card rounded-2xl p-6 border border-slate-800 text-center">
-        <h2 class="text-2xl font-bold text-white mb-2">Head-to-Head Player History (H2H)</h2>
-        <p class="text-sm text-slate-400 max-w-lg mx-auto">Select any two players to view all-time match results, set scores, win percentages, and rating exchanges.</p>
+        <h2 class="text-2xl font-bold text-white mb-2" data-i18n="h2hTitle">Head-to-Head Player History (H2H)</h2>
+        <p class="text-sm text-slate-400 max-w-lg mx-auto" data-i18n="h2hSubtitle">Select any two players to view all-time match results, set scores, win percentages, and rating exchanges.</p>
 
         <!-- Player Selector Grid -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-5 gap-4 items-center max-w-3xl mx-auto">
           <div class="md:col-span-2 glass-card p-4 rounded-xl border border-slate-700 text-left">
-            <label class="text-xs font-semibold text-teal-400 uppercase block mb-1">Player A</label>
+            <label class="text-xs font-semibold text-teal-400 uppercase block mb-1" data-i18n="h2hPlayerA">Player A</label>
             <select id="h2h-player-1" onchange="app.renderH2H()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-teal-500">
               <!-- Dynamically populated -->
             </select>
@@ -216,7 +223,7 @@
           </div>
 
           <div class="md:col-span-2 glass-card p-4 rounded-xl border border-slate-700 text-left">
-            <label class="text-xs font-semibold text-emerald-400 uppercase block mb-1">Player B</label>
+            <label class="text-xs font-semibold text-emerald-400 uppercase block mb-1" data-i18n="h2hPlayerB">Player B</label>
             <select id="h2h-player-2" onchange="app.renderH2H()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-teal-500">
               <!-- Dynamically populated -->
             </select>
@@ -249,26 +256,26 @@
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
         <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-2">
-          <i class="fa-solid fa-database text-teal-400"></i> Supabase Database Settings
+          <i class="fa-solid fa-database text-teal-400"></i> <span data-i18n="settingsTitle">Supabase Database Settings</span>
         </h3>
-        <p class="text-xs text-slate-400 mb-4">
+        <p class="text-xs text-slate-400 mb-4" data-i18n="settingsDesc">
           Enter your Supabase Project URL and Public Anon Key below. Leaving these blank will use local demo data.
         </p>
 
         <div class="space-y-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Project URL</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="projUrlLabel">Project URL</label>
             <input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:border-teal-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Anon / Public Key</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="anonKeyLabel">Anon / Public Key</label>
             <input type="password" id="cfg-sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:border-teal-500">
           </div>
         </div>
 
         <div class="mt-5 flex justify-end gap-2">
-          <button onclick="app.clearSupabaseConfig()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-rose-400 font-medium">Use Demo Mode</button>
-          <button onclick="app.saveSupabaseConfig()" class="px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-600 text-xs text-white font-medium">Save & Connect</button>
+          <button onclick="app.clearSupabaseConfig()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-rose-400 font-medium" data-i18n="btnResetDemo">Use Demo Mode</button>
+          <button onclick="app.saveSupabaseConfig()" class="px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-600 text-xs text-white font-medium" data-i18n="btnSaveConnect">Save & Connect</button>
         </div>
       </div>
     </div>
@@ -282,6 +289,7 @@
   </footer>
 
   <!-- App Main Scripts -->
+  <script src="./js/i18n.js"></script>
   <script src="./js/mockData.js"></script>
   <script src="./js/rating.js"></script>
   <script src="./js/db.js"></script>
