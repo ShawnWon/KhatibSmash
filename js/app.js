@@ -117,7 +117,7 @@ class App {
               </div>
             </div>
           </td>
-          <td class="px-5 py-4 text-center text-xs text-slate-300">${p.grip_style}</td>
+          <td class="px-5 py-4 text-center text-xs text-slate-300 hidden md:table-cell">${p.grip_style}</td>
           <td class="px-5 py-4 text-center font-bold text-teal-400 text-base">${p.current_rating}</td>
           <td class="px-5 py-4 text-center text-xs text-slate-400 font-semibold">${p.peak_rating}</td>
           <td class="px-5 py-4 text-center text-xs text-slate-300">
