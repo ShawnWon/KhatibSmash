@@ -1,6 +1,6 @@
 /**
  * KhatibSmash Frontend Controller
- * Available globally as window.app
+ * Available globally as window.app (English Interface)
  */
 
 class App {
@@ -25,10 +25,10 @@ class App {
     const badge = document.getElementById('backend-status-badge');
     if (badge) {
       if (window.SupabaseConfig && window.SupabaseConfig.url && window.SupabaseConfig.anonKey) {
-        badge.textContent = '数据源: Supabase 云数据库';
+        badge.textContent = 'Source: Supabase Cloud';
         badge.className = 'text-emerald-400 font-semibold';
       } else {
-        badge.textContent = '数据源: 演示数据 (点击配置)';
+        badge.textContent = 'Source: Demo Data';
         badge.className = 'text-slate-300';
       }
     }
@@ -70,14 +70,14 @@ class App {
     let filtered = this.players;
     if (filterText) {
       const q = filterText.toLowerCase();
-      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.grip_style.toLowerCase().includes(q));
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.grip_style && p.grip_style.toLowerCase().includes(q)));
     }
 
     // Top 3 Podium
     if (podiumContainer && !filterText) {
       const top3 = this.players.slice(0, 3);
       const badges = ['bg-amber-400/20 text-amber-300 border-amber-500/30', 'bg-slate-400/20 text-slate-300 border-slate-500/30', 'bg-amber-700/20 text-amber-500 border-amber-800/30'];
-      const rankLabels = ['冠军 No.1', '亚军 No.2', '季军 No.3'];
+      const rankLabels = ['Champion (1st)', 'Runner-up (2nd)', '3rd Place'];
 
       podiumContainer.innerHTML = top3.map((p, idx) => `
         <div class="glass-card rounded-2xl p-5 border ${badges[idx]} flex items-center justify-between cursor-pointer hover:border-teal-400/50 transition" onclick="app.showPlayerProfile('${p.id}')">
@@ -86,12 +86,12 @@ class App {
             <div>
               <div class="text-xs font-bold uppercase tracking-wider text-slate-400">${rankLabels[idx]}</div>
               <div class="text-base font-bold text-white hover:text-teal-400">${p.name}</div>
-              <div class="text-xs text-slate-400">${p.grip_style}</div>
+              <div class="text-xs text-slate-400">${p.grip_style || 'All-round'}</div>
             </div>
           </div>
           <div class="text-right">
             <div class="text-xl font-extrabold text-teal-400">${p.current_rating}</div>
-            <div class="text-xs text-slate-500">最高 ${p.peak_rating}</div>
+            <div class="text-xs text-slate-500">Peak ${p.peak_rating}</div>
           </div>
         </div>
       `).join('');
@@ -113,15 +113,15 @@ class App {
               <img src="${p.avatar_url}" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 p-0.5">
               <div>
                 <a href="javascript:void(0)" onclick="app.showPlayerProfile('${p.id}')" class="text-white font-semibold hover:text-teal-400 transition">${p.name}</a>
-                <span class="text-xs text-slate-500 block">${p.gender === 'M' ? '男' : '女'}</span>
+                <span class="text-xs text-slate-500 block">${p.gender === 'M' ? 'Male' : 'Female'}</span>
               </div>
             </div>
           </td>
-          <td class="px-5 py-4 text-center text-xs text-slate-300 hidden md:table-cell">${p.grip_style}</td>
+          <td class="px-5 py-4 text-center text-xs text-slate-300 hidden md:table-cell">${p.grip_style || 'N/A'}</td>
           <td class="px-5 py-4 text-center font-bold text-teal-400 text-base">${p.current_rating}</td>
           <td class="px-5 py-4 text-center text-xs text-slate-400 font-semibold">${p.peak_rating}</td>
           <td class="px-5 py-4 text-center text-xs text-slate-300">
-            ${p.total_matches} 场 <span class="text-emerald-400">(${p.total_wins}胜</span> / <span class="text-rose-400">${p.total_losses}负)</span>
+            ${p.total_matches} <span class="text-emerald-400">(${p.total_wins}W</span> / <span class="text-rose-400">${p.total_losses}L)</span>
           </td>
           <td class="px-5 py-4 text-center">
             <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${winRate >= 60 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-300'}">
@@ -130,7 +130,7 @@ class App {
           </td>
           <td class="px-5 py-4 text-center">
             <button onclick="app.showPlayerProfile('${p.id}')" class="text-xs text-teal-400 hover:text-teal-300 font-medium px-2 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 transition">
-              战绩档案
+              Profile
             </button>
           </td>
         </tr>
@@ -169,7 +169,7 @@ class App {
           <i class="fa-solid fa-location-dot mr-1 text-rose-400"></i> ${details.tournament.location}
         </span>
         <span class="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
-          <i class="fa-solid fa-check-double mr-1"></i> 已完赛
+          <i class="fa-solid fa-check-double mr-1"></i> Completed
         </span>
       `;
     }
@@ -201,14 +201,14 @@ class App {
 
     const parts = [...this.activeTournament.participants].sort((a, b) => a.final_rank - b.final_rank);
     tbody.innerHTML = parts.map(p => {
-      const playerObj = this.players.find(pl => pl.id === p.player_id) || { name: '选手', avatar_url: '' };
+      const playerObj = this.players.find(pl => pl.id === p.player_id) || { name: 'Player', avatar_url: '' };
       const changeClass = p.rating_change >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
       const changeSign = p.rating_change >= 0 ? `+${p.rating_change}` : `${p.rating_change}`;
 
       return `
         <tr class="hover:bg-slate-800/40 transition">
           <td class="px-5 py-3.5 text-center font-bold">
-            ${p.final_rank <= 3 ? `<span class="inline-block px-2 py-0.5 rounded text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30">第 ${p.final_rank} 名</span>` : `<span class="text-slate-400">第 ${p.final_rank} 名</span>`}
+            ${p.final_rank <= 3 ? `<span class="inline-block px-2 py-0.5 rounded text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30">Rank #${p.final_rank}</span>` : `<span class="text-slate-400">Rank #${p.final_rank}</span>`}
           </td>
           <td class="px-5 py-3.5 flex items-center space-x-3">
             <img src="${playerObj.avatar_url}" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700">
@@ -226,7 +226,7 @@ class App {
     const container = document.getElementById('group-matrices-container');
     if (!container || !this.activeTournament) return;
 
-    const groups = this.activeTournament.tournament.groups || ['A组', 'B组'];
+    const groups = this.activeTournament.tournament.groups || ['Group A', 'Group B'];
     const groupMatches = (this.activeTournament.matches || []).filter(m => m.stage === 'group');
 
     container.innerHTML = groups.map(gName => {
@@ -278,7 +278,7 @@ class App {
           <tr>
             <td class="font-bold text-slate-300 text-left px-3">${rIdx + 1}. ${rowP.name}</td>
             ${cellsHtml}
-            <td class="font-bold text-teal-400">${wins}胜 / ${losses}负</td>
+            <td class="font-bold text-teal-400">${wins}W / ${losses}L</td>
             <td class="text-xs text-slate-400">${setsWon}-${setsLost}</td>
           </tr>
         `;
@@ -288,18 +288,18 @@ class App {
         <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
           <div class="p-4 bg-slate-800/80 border-b border-slate-700/80 flex items-center justify-between">
             <h4 class="font-bold text-white text-base flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-teal-400"></span> ${gName} 循环对阵及积分矩阵
+              <span class="w-3 h-3 rounded-full bg-teal-400"></span> ${gName} Round Robin Matrix
             </h4>
-            <span class="text-xs text-slate-400">前两名出线进入淘汰赛</span>
+            <span class="text-xs text-slate-400">Top 2 advance to knockout stage</span>
           </div>
           <div class="overflow-x-auto p-4">
             <table class="matrix-table text-sm">
               <thead>
                 <tr>
-                  <th class="text-left w-36 px-3">选手 \\ 对阵</th>
+                  <th class="text-left w-36 px-3">Player \\ Match</th>
                   ${headersHtml}
-                  <th class="w-24">胜负场次</th>
-                  <th class="w-20">净胜局</th>
+                  <th class="w-24">Record</th>
+                  <th class="w-20">Sets +/-</th>
                 </tr>
               </thead>
               <tbody>
@@ -321,21 +321,28 @@ class App {
     container.innerHTML = `
       <div class="space-y-6">
         <h4 class="font-bold text-white text-base flex items-center gap-2">
-          <i class="fa-solid fa-crown text-amber-400"></i> 淘汰赛阶段对阵与比分
+          <i class="fa-solid fa-crown text-amber-400"></i> Knockout Stage Matches & Scores
         </h4>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           ${koMatches.map(m => {
-            const p1 = this.players.find(p => p.id === m.player1_id) || { name: '待定' };
-            const p2 = this.players.find(p => p.id === m.player2_id) || { name: '待定' };
+            const p1 = this.players.find(p => p.id === m.player1_id) || { name: 'TBD' };
+            const p2 = this.players.find(p => p.id === m.player2_id) || { name: 'TBD' };
             const p1Won = m.winner_id === m.player1_id;
             const p2Won = m.winner_id === m.player2_id;
+
+            // Translate round names if in chinese
+            let roundLabel = m.round_name || 'Knockout';
+            if (roundLabel.includes('半决赛 1')) roundLabel = 'Semi-Final 1 (A1 vs B2)';
+            else if (roundLabel.includes('半决赛 2')) roundLabel = 'Semi-Final 2 (B1 vs A2)';
+            else if (roundLabel.includes('季军')) roundLabel = 'Bronze Medal Match (A2 vs B2)';
+            else if (roundLabel.includes('冠亚军')) roundLabel = 'Grand Final (A1 vs B1)';
 
             return `
               <div class="glass-card p-4 rounded-xl border border-slate-700/80 hover:border-teal-500/40 transition">
                 <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-2 mb-3">
-                  <span class="font-semibold text-teal-400">${m.round_name}</span>
-                  <span>5局3胜 (11分制)</span>
+                  <span class="font-semibold text-teal-400">${roundLabel}</span>
+                  <span>Best of 5 (11-pt)</span>
                 </div>
                 
                 <div class="flex items-center justify-between p-2 rounded ${p1Won ? 'bg-teal-500/10 font-bold text-white' : 'text-slate-400'}">
@@ -349,7 +356,7 @@ class App {
                 </div>
 
                 <div class="mt-2 pt-2 border-t border-slate-800 text-[11px] text-slate-500 text-center">
-                  局分: ${m.set_scores}
+                  Set Scores: ${m.set_scores}
                 </div>
               </div>
             `;
@@ -365,7 +372,7 @@ class App {
     const sel2 = document.getElementById('h2h-player-2');
     if (!sel1 || !sel2) return;
 
-    const opts = this.players.map(p => `<option value="${p.id}">${p.name} (${p.current_rating}分)</option>`).join('');
+    const opts = this.players.map(p => `<option value="${p.id}">${p.name} (${p.current_rating} pts)</option>`).join('');
     sel1.innerHTML = opts;
     sel2.innerHTML = opts;
 
@@ -384,7 +391,7 @@ class App {
     if (p1Id === p2Id) {
       container.innerHTML = `
         <div class="p-8 text-center text-slate-500 glass-card rounded-2xl">
-          请选择两位不同的选手进行交锋战绩对比。
+          Please select two different players for head-to-head comparison.
         </div>
       `;
       return;
@@ -403,8 +410,8 @@ class App {
           <div class="space-y-2">
             <img src="${p1.avatar_url}" class="w-16 h-16 rounded-full mx-auto bg-slate-800 border-2 border-teal-500/50">
             <div class="font-bold text-white text-lg">${p1.name}</div>
-            <div class="text-xs text-slate-400">${p1.grip_style}</div>
-            <div class="text-sm font-semibold text-teal-400">积分: ${p1.current_rating}</div>
+            <div class="text-xs text-slate-400">${p1.grip_style || 'All-round'}</div>
+            <div class="text-sm font-semibold text-teal-400">Rating: ${p1.current_rating}</div>
           </div>
 
           <div>
@@ -413,7 +420,7 @@ class App {
               <span class="text-slate-600">:</span>
               <span class="text-emerald-400">${h2h.p2Wins}</span>
             </div>
-            <div class="text-xs text-slate-400 mt-2 font-medium">总计交手 ${h2h.total} 场</div>
+            <div class="text-xs text-slate-400 mt-2 font-medium">${h2h.total} Total Encounters</div>
 
             <div class="w-full bg-slate-800 h-2.5 rounded-full mt-3 overflow-hidden flex">
               <div class="bg-teal-500 h-full transition-all" style="width: ${p1WinRate}%"></div>
@@ -424,37 +431,37 @@ class App {
           <div class="space-y-2">
             <img src="${p2.avatar_url}" class="w-16 h-16 rounded-full mx-auto bg-slate-800 border-2 border-emerald-500/50">
             <div class="font-bold text-white text-lg">${p2.name}</div>
-            <div class="text-xs text-slate-400">${p2.grip_style}</div>
-            <div class="text-sm font-semibold text-emerald-400">积分: ${p2.current_rating}</div>
+            <div class="text-xs text-slate-400">${p2.grip_style || 'All-round'}</div>
+            <div class="text-sm font-semibold text-emerald-400">Rating: ${p2.current_rating}</div>
           </div>
         </div>
       </div>
 
       <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
         <div class="p-4 bg-slate-800/80 border-b border-slate-700/80 font-bold text-white flex items-center justify-between">
-          <span>历史交战记录明细</span>
-          <span class="text-xs text-slate-400">${h2h.matches.length} 次交锋</span>
+          <span>Match History Details</span>
+          <span class="text-xs text-slate-400">${h2h.matches.length} Total Matches</span>
         </div>
         <div class="divide-y divide-slate-800/60">
           ${h2h.matches.length === 0 ? `
-            <div class="p-8 text-center text-slate-500 text-sm">两位选手暂无正式交战记录</div>
+            <div class="p-8 text-center text-slate-500 text-sm">No official match encounters recorded yet.</div>
           ` : h2h.matches.map(m => {
             const isP1Winner = m.winner_id === p1Id;
             return `
               <div class="p-4 hover:bg-slate-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
                 <div>
                   <div class="font-semibold text-white flex items-center gap-2">
-                    <span>${m.tournament_title || '积分赛'}</span>
+                    <span>${m.tournament_title || 'Tournament Match'}</span>
                     <span class="text-xs text-teal-400 px-2 py-0.5 rounded bg-teal-500/10">${m.round_name}</span>
                   </div>
-                  <div class="text-xs text-slate-500 mt-1">${m.tournament_date || ''} · 详细局分: ${m.set_scores}</div>
+                  <div class="text-xs text-slate-500 mt-1">${m.tournament_date || ''} · Set Scores: ${m.set_scores}</div>
                 </div>
                 <div class="flex items-center gap-3">
                   <span class="font-bold text-base ${isP1Winner ? 'text-teal-400' : 'text-slate-400'}">${p1.name.split(' ')[0]} ${m.player1_id === p1Id ? m.player1_score : m.player2_score}</span>
                   <span class="text-slate-600">-</span>
                   <span class="font-bold text-base ${!isP1Winner ? 'text-emerald-400' : 'text-slate-400'}">${m.player1_id === p2Id ? m.player1_score : m.player2_score} ${p2.name.split(' ')[0]}</span>
                   <span class="text-xs px-2 py-0.5 rounded font-semibold ${isP1Winner ? 'bg-teal-500/20 text-teal-300' : 'bg-emerald-500/20 text-emerald-300'}">
-                    ${isP1Winner ? `${p1.name.split(' ')[0]} 胜` : `${p2.name.split(' ')[0]} 胜`}
+                    ${isP1Winner ? `${p1.name.split(' ')[0]} Won` : `${p2.name.split(' ')[0]} Won`}
                   </span>
                 </div>
               </div>
@@ -483,32 +490,32 @@ class App {
           <img src="${p.avatar_url}" class="w-16 h-16 rounded-full bg-slate-800 border-2 border-teal-400">
           <div>
             <h3 class="text-2xl font-bold text-white">${p.name}</h3>
-            <p class="text-xs text-slate-400 mt-0.5">打法风格: <span class="text-slate-200">${p.grip_style}</span> · ${p.gender === 'M' ? '男' : '女'}</p>
+            <p class="text-xs text-slate-400 mt-0.5">Style: <span class="text-slate-200">${p.grip_style || 'All-round'}</span> · ${p.gender === 'M' ? 'Male' : 'Female'}</p>
           </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3 text-center">
           <div class="glass-card p-3 rounded-xl border border-slate-700">
-            <div class="text-xs text-slate-400">当前积分</div>
+            <div class="text-xs text-slate-400">Current Rating</div>
             <div class="text-xl font-extrabold text-teal-400">${p.current_rating}</div>
           </div>
           <div class="glass-card p-3 rounded-xl border border-slate-700">
-            <div class="text-xs text-slate-400">历史最高</div>
+            <div class="text-xs text-slate-400">Peak Rating</div>
             <div class="text-xl font-extrabold text-amber-400">${p.peak_rating}</div>
           </div>
           <div class="glass-card p-3 rounded-xl border border-slate-700">
-            <div class="text-xs text-slate-400">参赛总场次</div>
+            <div class="text-xs text-slate-400">Total Matches</div>
             <div class="text-xl font-extrabold text-white">${p.total_matches}</div>
           </div>
           <div class="glass-card p-3 rounded-xl border border-slate-700">
-            <div class="text-xs text-slate-400">生涯胜率</div>
+            <div class="text-xs text-slate-400">Win Rate</div>
             <div class="text-xl font-extrabold text-emerald-400">${winRate}%</div>
           </div>
         </div>
 
         <div class="glass-card p-4 rounded-xl border border-slate-800">
           <h4 class="text-xs font-semibold text-slate-400 uppercase mb-3 flex items-center gap-1.5">
-            <i class="fa-solid fa-chart-line text-teal-400"></i> 历史积分演变走势
+            <i class="fa-solid fa-chart-line text-teal-400"></i> Rating Progression Curve
           </h4>
           <div class="h-48 w-full">
             <canvas id="player-rating-chart"></canvas>
@@ -516,12 +523,12 @@ class App {
         </div>
 
         <div>
-          <h4 class="text-xs font-semibold text-slate-400 uppercase mb-3">最近比赛战绩记录</h4>
+          <h4 class="text-xs font-semibold text-slate-400 uppercase mb-3">Recent Match Records</h4>
           <div class="divide-y divide-slate-800/60 max-h-48 overflow-y-auto">
-            ${history.matches.length === 0 ? '<div class="text-xs text-slate-500 py-3">暂无比赛对阵</div>' : history.matches.slice(0, 8).map(m => {
+            ${history.matches.length === 0 ? '<div class="text-xs text-slate-500 py-3">No recent matches recorded.</div>' : history.matches.slice(0, 8).map(m => {
               const isWinner = m.winner_id === p.id;
               const opId = m.player1_id === p.id ? m.player2_id : m.player1_id;
-              const op = this.players.find(pl => pl.id === opId) || { name: '对手' };
+              const op = this.players.find(pl => pl.id === opId) || { name: 'Opponent' };
               const myScore = m.player1_id === p.id ? m.player1_score : m.player2_score;
               const opScore = m.player1_id === p.id ? m.player2_score : m.player1_score;
 
@@ -530,12 +537,12 @@ class App {
                   <div>
                     <span class="font-semibold text-white">${m.tournament_title}</span>
                     <span class="text-slate-400 ml-1">vs ${op.name} (${m.round_name})</span>
-                    <div class="text-[10px] text-slate-500">小分: ${m.set_scores}</div>
+                    <div class="text-[10px] text-slate-500">Sets: ${m.set_scores}</div>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="font-bold ${isWinner ? 'text-teal-400' : 'text-slate-400'}">${myScore} : ${opScore}</span>
                     <span class="px-2 py-0.5 rounded font-bold ${isWinner ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
-                      ${isWinner ? '胜' : '负'}
+                      ${isWinner ? 'W' : 'L'}
                     </span>
                   </div>
                 </div>
@@ -572,7 +579,7 @@ class App {
         data: {
           labels: chartPoints.map(pt => pt.x),
           datasets: [{
-            label: '积分 (Rating)',
+            label: 'Rating',
             data: chartPoints.map(pt => pt.y),
             borderColor: '#14b8a6',
             backgroundColor: 'rgba(20, 184, 166, 0.1)',
