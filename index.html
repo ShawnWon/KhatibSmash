@@ -44,6 +44,9 @@
           <button onclick="app.navigate('h2h')" id="nav-h2h" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
             <i class="fa-solid fa-handshake-simple"></i> <span data-i18n="navH2H">Head to Head</span>
           </button>
+          <button onclick="app.navigate('board')" id="nav-board" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+            <i class="fa-solid fa-comments"></i> <span data-i18n="navBoard">Message Board</span>
+          </button>
         </nav>
 
         <!-- Right Action Button: Supabase Settings & Language Toggle -->
@@ -65,7 +68,7 @@
     </div>
 
     <!-- Mobile Nav Bar -->
-    <div class="flex md:hidden border-t border-slate-800 bg-slate-900/95 px-3 py-2 justify-around text-xs">
+    <div class="flex md:hidden border-t border-slate-800 bg-slate-900/95 px-2 py-2 justify-around text-xs">
       <button onclick="app.navigate('leaderboard')" class="flex flex-col items-center gap-1 text-teal-400">
         <i class="fa-solid fa-ranking-star"></i> <span data-i18n="navLeaderboard">Ranking</span>
       </button>
@@ -75,6 +78,9 @@
       <button onclick="app.navigate('h2h')" class="flex flex-col items-center gap-1 text-slate-400">
         <i class="fa-solid fa-handshake-simple"></i> <span data-i18n="navH2H">H2H</span>
       </button>
+      <button onclick="app.navigate('board')" class="flex flex-col items-center gap-1 text-slate-400">
+        <i class="fa-solid fa-comments"></i> <span data-i18n="navBoard">Board</span>
+      </button>
     </div>
   </header>
 
@@ -83,7 +89,6 @@
 
     <!-- VIEW 1: LEADERBOARD -->
     <section id="view-leaderboard" class="space-y-6">
-      <!-- Header Banner -->
       <div class="glass-card rounded-2xl p-6 relative overflow-hidden border border-teal-500/20 bg-gradient-to-r from-teal-950/40 to-slate-900">
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -93,7 +98,6 @@
             <h1 class="text-2xl md:text-3xl font-extrabold text-white" data-i18n="lbTitle">Khatib Table Tennis Community Leaderboard</h1>
             <p class="text-sm text-slate-400 mt-1" data-i18n="lbSubtitle">USATT / Kaiqiu Rating System · Dynamic Match-by-Match Exchange · Real Skill Reflection</p>
           </div>
-          <!-- Filter / Search -->
           <div class="flex items-center gap-3">
             <div class="relative">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
@@ -103,12 +107,8 @@
         </div>
       </div>
 
-      <!-- Top 3 Podium Highlights -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="top-podium-cards">
-        <!-- Rendered dynamically -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="top-podium-cards"></div>
 
-      <!-- Full Ranking Table -->
       <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
@@ -124,9 +124,7 @@
                 <th class="px-5 py-3.5 text-center" data-i18n="colAction">Action</th>
               </tr>
             </thead>
-            <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 font-medium">
-              <!-- Dynamically populated -->
-            </tbody>
+            <tbody id="leaderboard-tbody" class="divide-y divide-slate-800/60 font-medium"></tbody>
           </table>
         </div>
       </div>
@@ -134,20 +132,14 @@
 
     <!-- VIEW 2: TOURNAMENTS -->
     <section id="view-tournaments" class="space-y-6 hidden">
-      <!-- Tournament Selection Bar -->
       <div class="glass-card rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase mb-1" data-i18n="selectEdition">Select Tournament Edition</label>
-          <select id="tournament-select" onchange="app.changeTournament()" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-teal-500 font-medium">
-            <!-- Dynamically populated -->
-          </select>
+          <select id="tournament-select" onchange="app.changeTournament()" class="bg-slate-900 border border-slate-700 text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-teal-500 font-medium"></select>
         </div>
-        <div id="tournament-meta-badge" class="flex flex-wrap items-center gap-2 text-xs">
-          <!-- e.g. Date, Location, Status -->
-        </div>
+        <div id="tournament-meta-badge" class="flex flex-wrap items-center gap-2 text-xs"></div>
       </div>
 
-      <!-- Sub-tabs within Tournament -->
       <div class="flex border-b border-slate-800 space-x-6 text-sm font-semibold">
         <button onclick="app.setTournamentTab('results')" id="ttab-results" class="pb-3 border-b-2 border-teal-400 text-teal-400 flex items-center gap-2">
           <i class="fa-solid fa-chart-line"></i> <span data-i18n="tabStandings">Standings & Rating Deltas</span>
@@ -160,7 +152,6 @@
         </button>
       </div>
 
-      <!-- Sub-view 2.1: Tournament Results & Rating Changes -->
       <div id="subview-results" class="space-y-4">
         <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
           <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
@@ -180,26 +171,18 @@
                   <th class="px-5 py-3 text-center" data-i18n="colNewRating">New Rating</th>
                 </tr>
               </thead>
-              <tbody id="tournament-results-tbody" class="divide-y divide-slate-800/60">
-                <!-- Dynamically populated -->
-              </tbody>
+              <tbody id="tournament-results-tbody" class="divide-y divide-slate-800/60"></tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- Sub-view 2.2: Group Stage Cross Matrix -->
       <div id="subview-groups" class="space-y-6 hidden">
-        <div id="group-matrices-container" class="space-y-6">
-          <!-- Dynamically populated group tables -->
-        </div>
+        <div id="group-matrices-container" class="space-y-6"></div>
       </div>
 
-      <!-- Sub-view 2.3: Knockout Bracket -->
       <div id="subview-knockout" class="space-y-4 hidden">
-        <div class="glass-card rounded-2xl p-6 border border-slate-800" id="knockout-bracket-container">
-          <!-- Dynamically populated brackets -->
-        </div>
+        <div class="glass-card rounded-2xl p-6 border border-slate-800" id="knockout-bracket-container"></div>
       </div>
     </section>
 
@@ -209,13 +192,10 @@
         <h2 class="text-2xl font-bold text-white mb-2" data-i18n="h2hTitle">Head-to-Head Player History (H2H)</h2>
         <p class="text-sm text-slate-400 max-w-lg mx-auto" data-i18n="h2hSubtitle">Select any two players to view all-time match results, set scores, win percentages, and rating exchanges.</p>
 
-        <!-- Player Selector Grid -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-5 gap-4 items-center max-w-3xl mx-auto">
           <div class="md:col-span-2 glass-card p-4 rounded-xl border border-slate-700 text-left">
             <label class="text-xs font-semibold text-teal-400 uppercase block mb-1" data-i18n="h2hPlayerA">Player A</label>
-            <select id="h2h-player-1" onchange="app.renderH2H()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-teal-500">
-              <!-- Dynamically populated -->
-            </select>
+            <select id="h2h-player-1" onchange="app.renderH2H()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-teal-500"></select>
           </div>
 
           <div class="text-center font-extrabold text-2xl text-teal-400">
@@ -224,28 +204,59 @@
 
           <div class="md:col-span-2 glass-card p-4 rounded-xl border border-slate-700 text-left">
             <label class="text-xs font-semibold text-emerald-400 uppercase block mb-1" data-i18n="h2hPlayerB">Player B</label>
-            <select id="h2h-player-2" onchange="app.renderH2H()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-teal-500">
-              <!-- Dynamically populated -->
-            </select>
+            <select id="h2h-player-2" onchange="app.renderH2H()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-teal-500"></select>
           </div>
         </div>
       </div>
 
-      <!-- H2H Comparison Result Display -->
-      <div id="h2h-result-container" class="space-y-6">
-        <!-- Dynamically rendered -->
+      <div id="h2h-result-container" class="space-y-6"></div>
+    </section>
+
+    <!-- VIEW 4: MESSAGE BOARD (留言板) -->
+    <section id="view-board" class="space-y-6 hidden">
+      <!-- Banner -->
+      <div class="glass-card rounded-2xl p-6 relative overflow-hidden border border-teal-500/20 bg-gradient-to-r from-teal-950/40 to-slate-900">
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-2.5">
+          <i class="fa-solid fa-comments text-teal-400"></i> <span data-i18n="boardTitle">Community Message Board</span>
+        </h1>
+        <p class="text-sm text-slate-400 mt-1" data-i18n="boardSubtitle">Share tips, match feedback, arrange practice sessions, or chat anonymously with fellow players.</p>
+      </div>
+
+      <!-- Post Input Box -->
+      <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-3">
+        <!-- Reply indicator if active -->
+        <div id="reply-target-indicator" class="hidden items-center justify-between p-2 rounded-lg bg-teal-500/10 border border-teal-500/30 text-xs">
+          <span class="text-teal-300 font-medium">
+            <i class="fa-solid fa-reply mr-1"></i> <span data-i18n="replyingTo">Replying to</span>: <strong id="reply-target-author"></strong>
+          </span>
+          <button onclick="app.cancelReply()" class="text-slate-400 hover:text-white font-semibold" data-i18n="cancelReply">Cancel</button>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input type="text" id="msg-nickname" placeholder="Nickname (optional, defaults to Anonymous)" class="sm:w-64 bg-slate-900 border border-slate-700 text-sm text-white rounded-xl px-3.5 py-2.5 focus:border-teal-500 focus:outline-none">
+        </div>
+        <textarea id="msg-content" rows="3" placeholder="Write a message or start a discussion..." class="w-full bg-slate-900 border border-slate-700 text-sm text-white rounded-xl p-3.5 focus:border-teal-500 focus:outline-none resize-none"></textarea>
+        
+        <div class="flex justify-end">
+          <button onclick="app.submitMessage()" class="px-5 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 font-semibold text-white text-sm flex items-center gap-2 shadow-lg shadow-teal-500/20 transition">
+            <i class="fa-solid fa-paper-plane text-xs"></i> <span data-i18n="btnPostMessage">Post Message</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Stream List -->
+      <div class="space-y-4" id="board-messages-container">
+        <!-- Dynamically rendered threads -->
       </div>
     </section>
 
-    <!-- VIEW 4: PLAYER PROFILE MODAL -->
+    <!-- VIEW 5: PLAYER PROFILE MODAL -->
     <div id="player-profile-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
       <div class="glass-card rounded-2xl max-w-2xl w-full p-6 border border-slate-700 max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200">
         <button onclick="app.closePlayerModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
-        <div id="player-modal-content">
-          <!-- Dynamically populated -->
-        </div>
+        <div id="player-modal-content"></div>
       </div>
     </div>
 

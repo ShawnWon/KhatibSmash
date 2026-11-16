@@ -14,6 +14,7 @@ class DataService {
     this.client = null;
     this.isSupabaseConfigured = false;
     this.mockData = null;
+    this.localMessagesKey = 'khatib_local_messages';
     this.init();
   }
 
@@ -31,7 +32,6 @@ class DataService {
   async loadMockData() {
     if (this.mockData) return this.mockData;
 
-    // 1. If running on a local web server (http:// or https://), fetch mock_data.json directly so edits reflect immediately
     if (window.location.protocol.startsWith('http')) {
       try {
         const res = await fetch('./data/mock_data.json?t=' + Date.now());
@@ -44,7 +44,6 @@ class DataService {
       }
     }
 
-    // 2. If opened directly via file://, use embedded window.embeddedMockData
     if (window.embeddedMockData) {
       this.mockData = window.embeddedMockData;
       return this.mockData;
@@ -203,6 +202,124 @@ class DataService {
       matches,
       ratingHistory: ratingPoints
     };
+  }
+
+  // --- Community Message Board ---
+  async getMessages() {
+    if (this.isSupabaseConfigured) {
+      try {
+        const { data, error } = await this.client
+          .from('messages')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) return data;
+      } catch (err) {
+        console.warn('Supabase getMessages error, falling back to local:', err);
+      }
+    }
+
+    const local = localStorage.getItem(this.localMessagesKey);
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch (e) {}
+    }
+
+    // Default pre-loaded friendly messages
+    const initialMsgs = [
+      {
+        id: "msg-1",
+        author_name: "Khatib_SpinMaster",
+        avatar_seed: "spinmaster",
+        content: "Awesome match in the finals! Congratulations to Crystal on winning the monthly tournament! 🏓🔥",
+        parent_id: null,
+        likes: 5,
+        created_at: "2026-11-15T18:30:00Z"
+      },
+      {
+        id: "msg-2",
+        author_name: "Anonymous Fan",
+        avatar_seed: "fan88",
+        content: "Yeoh's backhand loop drives were super solid today. Looking forward to the rematch next month!",
+        parent_id: "msg-1",
+        likes: 3,
+        created_at: "2026-11-15T19:05:00Z"
+      },
+      {
+        id: "msg-3",
+        author_name: "WeekendPingPong",
+        avatar_seed: "weekend",
+        content: "Anyone interested in weekend casual doubles or multi-ball practice this Saturday 4 PM at Khatib Hall?",
+        parent_id: null,
+        likes: 4,
+        created_at: "2026-11-16T10:15:00Z"
+      }
+    ];
+
+    localStorage.setItem(this.localMessagesKey, JSON.stringify(initialMsgs));
+    return initialMsgs;
+  }
+
+  async addMessage(authorName, content, parentId = null) {
+    const author = authorName ? authorName.trim() : 'Anonymous';
+    const seed = Math.random().toString(36).substring(2, 8);
+    const newMsg = {
+      id: 'msg-' + Date.now(),
+      author_name: author,
+      avatar_seed: seed,
+      content: content.trim(),
+      parent_id: parentId,
+      likes: 0,
+      created_at: new Date().toISOString()
+    };
+
+    if (this.isSupabaseConfigured) {
+      try {
+        const { data, error } = await this.client
+          .from('messages')
+          .insert([{
+            author_name: newMsg.author_name,
+            avatar_seed: newMsg.avatar_seed,
+            content: newMsg.content,
+            parent_id: newMsg.parent_id,
+            likes: 0
+          }])
+          .select();
+        if (!error && data && data.length > 0) return data[0];
+      } catch (err) {
+        console.warn('Supabase addMessage error, saving locally:', err);
+      }
+    }
+
+    const current = await this.getMessages();
+    current.unshift(newMsg);
+    localStorage.setItem(this.localMessagesKey, JSON.stringify(current));
+    return newMsg;
+  }
+
+  async likeMessage(messageId) {
+    if (this.isSupabaseConfigured) {
+      try {
+        // Increment likes
+        const { data: current } = await this.client.from('messages').select('likes').eq('id', messageId).single();
+        if (current) {
+          const newLikes = (current.likes || 0) + 1;
+          await this.client.from('messages').update({ likes: newLikes }).eq('id', messageId);
+          return newLikes;
+        }
+      } catch (err) {
+        console.warn('Supabase likeMessage error:', err);
+      }
+    }
+
+    const current = await this.getMessages();
+    const msg = current.find(m => m.id === messageId);
+    if (msg) {
+      msg.likes = (msg.likes || 0) + 1;
+      localStorage.setItem(this.localMessagesKey, JSON.stringify(current));
+      return msg.likes;
+    }
+    return 0;
   }
 }
 

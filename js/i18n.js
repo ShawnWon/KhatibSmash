@@ -13,6 +13,7 @@ window.i18n = {
       navLeaderboard: "Leaderboard",
       navTournaments: "Tournaments & Brackets",
       navH2H: "Head to Head",
+      navBoard: "Message Board",
       dataSourceDemo: "Source: Demo Data",
       dataSourceSupabase: "Source: Supabase Cloud",
       dataSourceBtn: "Data Source",
@@ -69,6 +70,18 @@ window.i18n = {
       h2hNoMatches: "No official match encounters recorded yet.",
       h2hWon: "Won",
 
+      // Message Board
+      boardTitle: "Community Message Board",
+      boardSubtitle: "Share tips, match feedback, arrange practice sessions, or chat anonymously with fellow players.",
+      boardPlaceholder: "Write a message or start a discussion...",
+      boardNicknamePlaceholder: "Nickname (optional, defaults to Anonymous)",
+      btnPostMessage: "Post Message",
+      btnReply: "Reply",
+      btnLike: "Like",
+      replyingTo: "Replying to",
+      cancelReply: "Cancel",
+      noMessagesYet: "No messages yet. Be the first to start a conversation!",
+
       // Player Profile Modal
       currentRating: "Current Rating",
       peakRating: "Peak Rating",
@@ -96,6 +109,7 @@ window.i18n = {
       navLeaderboard: "总积分榜",
       navTournaments: "赛事成绩 & 对阵",
       navH2H: "H2H 历史交手",
+      navBoard: "球友留言板",
       dataSourceDemo: "数据源: 演示数据",
       dataSourceSupabase: "数据源: Supabase 云端",
       dataSourceBtn: "数据源设置",
@@ -151,6 +165,18 @@ window.i18n = {
       h2hMatchesTitle: "历史交战记录明细",
       h2hNoMatches: "两位选手暂无正式交战记录",
       h2hWon: "胜",
+
+      // Message Board
+      boardTitle: "球友会社区留言板",
+      boardSubtitle: "欢迎约球交流、复盘比赛、讨论胶皮底板器材，支持匿名发布与互相回复。",
+      boardPlaceholder: "发表留言或参与讨论...",
+      boardNicknamePlaceholder: "昵称 (选填，留空显示为匿名球友)",
+      btnPostMessage: "发布留言",
+      btnReply: "回复",
+      btnLike: "点赞",
+      replyingTo: "正在回复",
+      cancelReply: "取消回复",
+      noMessagesYet: "暂无留言，快来发第一条讨论吧！",
 
       // Player Profile Modal
       currentRating: "当前积分",

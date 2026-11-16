@@ -1,6 +1,6 @@
 /**
  * KhatibSmash Frontend Controller
- * Available globally as window.app (Supports English / Chinese i18n)
+ * Available globally as window.app (Supports English / Chinese i18n + Community Message Board)
  */
 
 class App {
@@ -9,8 +9,10 @@ class App {
     this.currentTournamentTab = 'results';
     this.players = [];
     this.tournaments = [];
+    this.messages = [];
     this.activeTournament = null;
     this.ratingChart = null;
+    this.replyTargetId = null;
   }
 
   async init() {
@@ -20,6 +22,7 @@ class App {
     this.renderLeaderboard();
     this.initTournamentsSelect();
     this.initH2HSelect();
+    await this.loadMessages();
   }
 
   setLanguage(lang) {
@@ -31,7 +34,6 @@ class App {
   applyLanguage() {
     const lang = window.i18n ? window.i18n.currentLang : 'en';
 
-    // Update active pill button state
     const btnEn = document.getElementById('lang-btn-en');
     const btnCn = document.getElementById('lang-btn-cn');
     if (btnEn && btnCn) {
@@ -44,7 +46,6 @@ class App {
       }
     }
 
-    // Replace static text nodes with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (key && window.i18n) {
@@ -57,6 +58,16 @@ class App {
       searchInput.placeholder = window.i18n.t('searchPlaceholder');
     }
 
+    const nickInput = document.getElementById('msg-nickname');
+    if (nickInput && window.i18n) {
+      nickInput.placeholder = window.i18n.t('boardNicknamePlaceholder');
+    }
+
+    const msgContentInput = document.getElementById('msg-content');
+    if (msgContentInput && window.i18n) {
+      msgContentInput.placeholder = window.i18n.t('boardPlaceholder');
+    }
+
     this.updateBackendBadge();
     if (this.players && this.players.length > 0) {
       this.renderLeaderboard();
@@ -67,6 +78,7 @@ class App {
       }
       this.initH2HSelect();
       this.renderH2H();
+      this.renderMessages();
     }
   }
 
@@ -79,10 +91,10 @@ class App {
     if (badge) {
       if (window.SupabaseConfig && window.SupabaseConfig.url && window.SupabaseConfig.anonKey) {
         badge.textContent = this.t('dataSourceSupabase');
-        badge.className = 'text-emerald-400 font-semibold';
+        badge.className = 'text-emerald-400 font-semibold hidden sm:inline';
       } else {
         badge.textContent = this.t('dataSourceDemo');
-        badge.className = 'text-slate-300';
+        badge.className = 'text-slate-300 hidden sm:inline';
       }
     }
   }
@@ -94,7 +106,7 @@ class App {
 
   navigate(viewName) {
     this.currentView = viewName;
-    ['leaderboard', 'tournaments', 'h2h'].forEach(v => {
+    ['leaderboard', 'tournaments', 'h2h', 'board'].forEach(v => {
       const el = document.getElementById(`view-${v}`);
       const btn = document.getElementById(`nav-${v}`);
       if (el) el.classList.toggle('hidden', v !== viewName);
@@ -111,6 +123,8 @@ class App {
       this.changeTournament();
     } else if (viewName === 'h2h') {
       this.renderH2H();
+    } else if (viewName === 'board') {
+      this.renderMessages();
     }
   }
 
@@ -126,7 +140,6 @@ class App {
       filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.grip_style && p.grip_style.toLowerCase().includes(q)));
     }
 
-    // Top 3 Podium
     if (podiumContainer && !filterText) {
       const top3 = this.players.slice(0, 3);
       const badges = ['bg-amber-400/20 text-amber-300 border-amber-500/30', 'bg-slate-400/20 text-slate-300 border-slate-500/30', 'bg-amber-700/20 text-amber-500 border-amber-800/30'];
@@ -150,7 +163,6 @@ class App {
       `).join('');
     }
 
-    // Table rows
     tbody.innerHTML = filtered.map((p, index) => {
       const winRate = p.total_matches > 0 ? Math.round((p.total_wins / p.total_matches) * 100) : 0;
       let rankBadge = `<span class="inline-block w-6 text-center text-slate-400 font-bold">${index + 1}</span>`;
@@ -392,13 +404,11 @@ class App {
 
             let roundLabel = m.round_name || 'Knockout';
             if (this.t('colRank') === '排名') {
-              // Chinese mode round names
               if (roundLabel.includes('Semi-Final 1') || roundLabel.includes('半决赛 1')) roundLabel = '半决赛 1 (A1 vs B2)';
               else if (roundLabel.includes('Semi-Final 2') || roundLabel.includes('半决赛 2')) roundLabel = '半决赛 2 (B1 vs A2)';
               else if (roundLabel.includes('Bronze') || roundLabel.includes('季军')) roundLabel = '季军战 (A2 vs B2)';
               else if (roundLabel.includes('Grand Final') || roundLabel.includes('决赛')) roundLabel = '冠亚军决赛 (A1 vs B1)';
             } else {
-              // English mode round names
               if (roundLabel.includes('半决赛 1')) roundLabel = 'Semi-Final 1 (A1 vs B2)';
               else if (roundLabel.includes('半决赛 2')) roundLabel = 'Semi-Final 2 (B1 vs A2)';
               else if (roundLabel.includes('季军')) roundLabel = 'Bronze Medal Match (A2 vs B2)';
@@ -538,6 +548,144 @@ class App {
         </div>
       </div>
     `;
+  }
+
+  // --- COMMUNITY MESSAGE BOARD LOGIC ---
+  async loadMessages() {
+    this.messages = await window.db.getMessages();
+  }
+
+  renderMessages() {
+    const container = document.getElementById('board-messages-container');
+    if (!container) return;
+
+    if (!this.messages || this.messages.length === 0) {
+      container.innerHTML = `
+        <div class="glass-card rounded-2xl p-8 text-center text-slate-500 text-sm">
+          ${this.t('noMessagesYet')}
+        </div>
+      `;
+      return;
+    }
+
+    // Top-level posts
+    const topPosts = this.messages.filter(m => !m.parent_id);
+    const replies = this.messages.filter(m => m.parent_id);
+
+    container.innerHTML = topPosts.map(post => {
+      const postReplies = replies.filter(r => r.parent_id === post.id);
+      const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${post.avatar_seed || post.author_name}`;
+      const timeStr = new Date(post.created_at).toLocaleString();
+
+      return `
+        <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
+          <!-- Main Post -->
+          <div class="flex items-start space-x-3.5">
+            <img src="${avatarUrl}" class="w-10 h-10 rounded-full bg-slate-800 border border-teal-500/40 p-0.5 shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <div class="font-bold text-white text-sm">${this.escapeHtml(post.author_name)}</div>
+                <div class="text-[11px] text-slate-500">${timeStr}</div>
+              </div>
+              <p class="text-slate-200 text-sm mt-1 whitespace-pre-wrap leading-relaxed">${this.escapeHtml(post.content)}</p>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-4 mt-3 text-xs">
+                <button onclick="app.likeMessage('${post.id}')" class="text-slate-400 hover:text-rose-400 transition flex items-center gap-1.5">
+                  <i class="fa-regular fa-heart"></i>
+                  <span>${post.likes || 0}</span>
+                </button>
+                <button onclick="app.setReplyTarget('${post.id}', '${this.escapeHtml(post.author_name)}')" class="text-teal-400 hover:text-teal-300 transition flex items-center gap-1 font-semibold">
+                  <i class="fa-solid fa-reply"></i>
+                  <span>${this.t('btnReply')}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Threaded Replies -->
+          ${postReplies.length > 0 ? `
+            <div class="ml-10 pt-3 border-t border-slate-800/80 space-y-3">
+              ${postReplies.map(r => {
+                const rAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${r.avatar_seed || r.author_name}`;
+                const rTime = new Date(r.created_at).toLocaleString();
+                return `
+                  <div class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                    <img src="${rAvatar}" class="w-7 h-7 rounded-full bg-slate-800 border border-emerald-500/40 p-0.5 shrink-0">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <div class="font-semibold text-white text-xs">${this.escapeHtml(r.author_name)}</div>
+                        <div class="text-[10px] text-slate-500">${rTime}</div>
+                      </div>
+                      <p class="text-slate-300 text-xs mt-1 whitespace-pre-wrap leading-relaxed">${this.escapeHtml(r.content)}</p>
+                      <div class="flex items-center gap-3 mt-2 text-[11px]">
+                        <button onclick="app.likeMessage('${r.id}')" class="text-slate-400 hover:text-rose-400 transition flex items-center gap-1">
+                          <i class="fa-regular fa-heart"></i>
+                          <span>${r.likes || 0}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  setReplyTarget(id, author) {
+    this.replyTargetId = id;
+    const indicator = document.getElementById('reply-target-indicator');
+    const authorSpan = document.getElementById('reply-target-author');
+    if (indicator && authorSpan) {
+      authorSpan.textContent = author;
+      indicator.classList.remove('hidden');
+      indicator.classList.add('flex');
+    }
+    const input = document.getElementById('msg-content');
+    if (input) {
+      input.focus();
+      input.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  cancelReply() {
+    this.replyTargetId = null;
+    const indicator = document.getElementById('reply-target-indicator');
+    if (indicator) {
+      indicator.classList.add('hidden');
+      indicator.classList.remove('flex');
+    }
+  }
+
+  async submitMessage() {
+    const nickInput = document.getElementById('msg-nickname');
+    const contentInput = document.getElementById('msg-content');
+    if (!contentInput) return;
+
+    const content = contentInput.value.trim();
+    if (!content) return;
+
+    const nickname = nickInput ? nickInput.value.trim() : '';
+    await window.db.addMessage(nickname, content, this.replyTargetId);
+
+    contentInput.value = '';
+    this.cancelReply();
+    await this.loadMessages();
+    this.renderMessages();
+  }
+
+  async likeMessage(id) {
+    await window.db.likeMessage(id);
+    await this.loadMessages();
+    this.renderMessages();
+  }
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
   // --- PLAYER PROFILE & RATING CHART MODAL ---
