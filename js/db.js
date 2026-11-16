@@ -13,7 +13,7 @@ class DataService {
   constructor() {
     this.client = null;
     this.isSupabaseConfigured = false;
-    this.mockData = window.embeddedMockData || null;
+    this.mockData = null;
     this.init();
   }
 
@@ -29,22 +29,28 @@ class DataService {
   }
 
   async loadMockData() {
-    if (window.embeddedMockData) {
-      return window.embeddedMockData;
+    if (this.mockData) return this.mockData;
+
+    // 1. If running on a local web server (http:// or https://), fetch mock_data.json directly so edits reflect immediately
+    if (window.location.protocol.startsWith('http')) {
+      try {
+        const res = await fetch('./data/mock_data.json?t=' + Date.now());
+        if (res.ok) {
+          this.mockData = await res.json();
+          return this.mockData;
+        }
+      } catch (e) {
+        console.warn('Could not fetch mock_data.json via HTTP:', e);
+      }
     }
-    if (this.mockData) {
+
+    // 2. If opened directly via file://, use embedded window.embeddedMockData
+    if (window.embeddedMockData) {
+      this.mockData = window.embeddedMockData;
       return this.mockData;
     }
-    try {
-      const res = await fetch('./data/mock_data.json');
-      if (res.ok) {
-        this.mockData = await res.json();
-        return this.mockData;
-      }
-    } catch (e) {
-      console.warn('Could not fetch mock_data.json', e);
-    }
-    return window.embeddedMockData;
+
+    return null;
   }
 
   // --- Players ---

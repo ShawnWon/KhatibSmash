@@ -2,8 +2,8 @@
   "players": [
     {
       "id": "p-101",
-      "name": "张继东 (Tiger)",
-      "gender": "M",
+      "name": "Crystal",
+      "gender": "F",
       "grip_style": "直拍左推右攻/生胶",
       "initial_rating": 1550,
       "current_rating": 1642,
@@ -15,7 +15,7 @@
     },
     {
       "id": "p-102",
-      "name": "陈浩 (Alex)",
+      "name": "Yeoh Kooi Chuan",
       "gender": "M",
       "grip_style": "横板两面反胶/弧圈",
       "initial_rating": 1500,
