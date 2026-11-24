@@ -4,7 +4,18 @@
  */
 
 window.i18n = {
-  currentLang: localStorage.getItem('khatib_lang') || 'en',
+  detectDefaultLang() {
+    const saved = localStorage.getItem('khatib_lang');
+    if (saved) return saved;
+
+    const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    if (navLang.startsWith('zh')) {
+      return 'cn';
+    }
+    return 'en';
+  },
+
+  currentLang: null, // will be initialized below
 
   translations: {
     en: {
@@ -216,3 +227,5 @@ window.i18n = {
     }
   }
 };
+
+window.i18n.currentLang = window.i18n.detectDefaultLang();
