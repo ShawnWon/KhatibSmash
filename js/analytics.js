@@ -5,7 +5,7 @@
 
 window.GA_CONFIG = {
   // If you have your Measurement ID, you can replace G-XXXXXXXXXX here or enter it in Settings Modal
-  defaultMeasurementId: 'G-XXXXXXXXXX',
+  defaultMeasurementId: 'GTM-TB2S2497',
 
   getMeasurementId() {
     return localStorage.getItem('khatib_ga_id') || this.defaultMeasurementId;
@@ -21,7 +21,7 @@ window.GA_CONFIG = {
 
   init() {
     const gaId = this.getMeasurementId();
-    if (!gaId || gaId === 'G-XXXXXXXXXX') {
+    if (!gaId || gaId === 'GTM-TB2S2497') {
       return;
     }
 
@@ -46,7 +46,7 @@ window.GA_CONFIG = {
   // Track virtual page views for SPA tab navigation
   trackPageView(pageName) {
     const gaId = this.getMeasurementId();
-    if (window.gtag && gaId && gaId !== 'G-XXXXXXXXXX') {
+    if (window.gtag && gaId && gaId !== 'GTM-TB2S2497') {
       window.gtag('event', 'page_view', {
         page_title: pageName,
         page_location: window.location.href,
@@ -58,7 +58,7 @@ window.GA_CONFIG = {
   // Track user interaction events
   trackEvent(eventName, params = {}) {
     const gaId = this.getMeasurementId();
-    if (window.gtag && gaId && gaId !== 'G-XXXXXXXXXX') {
+    if (window.gtag && gaId && gaId !== 'GTM-TB2S2497') {
       window.gtag('event', eventName, params);
     }
   }
