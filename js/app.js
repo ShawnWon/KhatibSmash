@@ -106,6 +106,9 @@ class App {
 
   navigate(viewName) {
     this.currentView = viewName;
+    if (window.GA_CONFIG) {
+      window.GA_CONFIG.trackPageView(viewName);
+    }
     ['leaderboard', 'tournaments', 'h2h', 'board'].forEach(v => {
       const el = document.getElementById(`view-${v}`);
       const btn = document.getElementById(`nav-${v}`);
@@ -840,8 +843,10 @@ class App {
     const modal = document.getElementById('settings-modal');
     const uInput = document.getElementById('cfg-sb-url');
     const kInput = document.getElementById('cfg-sb-key');
+    const gaInput = document.getElementById('cfg-ga-id');
     if (uInput) uInput.value = localStorage.getItem('khatib_sb_url') || '';
     if (kInput) kInput.value = localStorage.getItem('khatib_sb_key') || '';
+    if (gaInput) gaInput.value = localStorage.getItem('khatib_ga_id') || '';
     if (modal) {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
@@ -859,9 +864,14 @@ class App {
   saveSupabaseConfig() {
     const url = document.getElementById('cfg-sb-url')?.value.trim();
     const key = document.getElementById('cfg-sb-key')?.value.trim();
+    const gaId = document.getElementById('cfg-ga-id')?.value.trim();
+
     if (url && key) {
       localStorage.setItem('khatib_sb_url', url);
       localStorage.setItem('khatib_sb_key', key);
+    }
+    if (window.GA_CONFIG) {
+      window.GA_CONFIG.setMeasurementId(gaId);
     }
     this.closeSettingsModal();
     window.location.reload();
@@ -870,6 +880,7 @@ class App {
   clearSupabaseConfig() {
     localStorage.removeItem('khatib_sb_url');
     localStorage.removeItem('khatib_sb_key');
+    localStorage.removeItem('khatib_ga_id');
     this.closeSettingsModal();
     window.location.reload();
   }
