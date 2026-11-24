@@ -316,8 +316,8 @@
 
     <!-- MODAL: NOTICE & CONTACT / JOIN US -->
     <div id="notice-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-      <div class="glass-card rounded-2xl max-w-lg w-full p-6 border border-teal-500/30 relative animate-in fade-in zoom-in-95 duration-200">
-        <button onclick="app.closeNoticeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+      <div class="glass-card rounded-2xl max-w-lg w-full p-6 border border-teal-500/30 relative max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+        <button onclick="app.closeNoticeModal()" class="sticky top-0 float-right -mr-2 -mt-2 text-slate-400 hover:text-white p-2 z-10 bg-slate-900/60 rounded-full backdrop-blur-sm">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
 
