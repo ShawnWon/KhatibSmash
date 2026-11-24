@@ -71,7 +71,7 @@
           </button>
         </nav>
 
-        <!-- Right Action Button: Notice, Supabase Settings & Language Toggle -->
+        <!-- Right Action Button: Notice & Language Toggle -->
         <div class="flex items-center space-x-2 sm:space-x-3">
           <!-- Notice / Join Us Button -->
           <button onclick="app.openNoticeModal()" class="px-2.5 sm:px-3 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/10 hover:bg-teal-500/20 text-xs text-teal-300 font-semibold flex items-center gap-1.5 transition shadow-sm">
@@ -84,13 +84,6 @@
             <button onclick="app.setLanguage('en')" id="lang-btn-en" class="px-2.5 py-1 rounded-md transition-all text-teal-400 bg-teal-500/20 font-bold">EN</button>
             <button onclick="app.setLanguage('cn')" id="lang-btn-cn" class="px-2.5 py-1 rounded-md transition-all text-slate-400 hover:text-white">中文</button>
           </div>
-
-          <!-- Supabase Config Button -->
-          <button onclick="app.openSettingsModal()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-database text-teal-400"></i>
-            <span id="backend-status-badge" class="hidden sm:inline">Source: Demo Data</span>
-            <i class="fa-solid fa-gear text-slate-400"></i>
-          </button>
         </div>
       </div>
     </div>
@@ -318,7 +311,7 @@
             <div class="pt-2 border-t border-slate-800/80 space-y-1.5 text-xs">
               <div class="flex items-center justify-between text-slate-300">
                 <span class="text-slate-500" data-i18n="noticeContactPerson">Contact Person:</span>
-                <span class="font-semibold text-white">Shawn / Coach Zhang</span>
+                <span class="font-semibold text-white">Sean / Coach Zhang</span>
               </div>
               <div class="flex items-center justify-between text-slate-300">
                 <span class="text-slate-500" data-i18n="noticePhone">Phone / Mobile:</span>
