@@ -1,0 +1,48 @@
+# Robots.txt for KhatibSmash Table Tennis Community
+# Allow indexing from all major search engines and AI web crawlers
+
+User-agent: *
+Allow: /
+
+# Google Search & Media Crawlers
+User-agent: Googlebot
+Allow: /
+User-agent: Googlebot-Image
+Allow: /
+User-agent: Googlebot-Mobile
+Allow: /
+
+# Microsoft Bing Crawlers
+User-agent: Bingbot
+Allow: /
+User-agent: msnbot
+Allow: /
+
+# OpenAI Crawlers & Search
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic Claude Crawler
+User-agent: ClaudeBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+
+# Apple & Meta Search Crawlers
+User-agent: Applebot
+Allow: /
+User-agent: FacebookExternalHit
+Allow: /
+
+# Baidu & DuckDuckGo Crawlers
+User-agent: Baiduspider
+Allow: /
+User-agent: DuckDuckBot
+Allow: /
+
+# Sitemap Location
+Sitemap: https://khatibsmash.pages.dev/sitemap.xml
