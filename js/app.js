@@ -112,12 +112,21 @@ class App {
     ['leaderboard', 'tournaments', 'h2h', 'board'].forEach(v => {
       const el = document.getElementById(`view-${v}`);
       const btn = document.getElementById(`nav-${v}`);
+      const mobileBtn = document.getElementById(`nav-mobile-${v}`);
+
       if (el) el.classList.toggle('hidden', v !== viewName);
       if (btn) {
         if (v === viewName) {
           btn.className = 'nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-teal-400 bg-teal-500/10';
         } else {
           btn.className = 'nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800';
+        }
+      }
+      if (mobileBtn) {
+        if (v === viewName) {
+          mobileBtn.className = 'flex flex-col items-center gap-1 text-teal-400 font-semibold transition-all';
+        } else {
+          mobileBtn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-all';
         }
       }
     });
