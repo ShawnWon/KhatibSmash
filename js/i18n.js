@@ -105,7 +105,19 @@ window.i18n = {
       genderMale: "Male",
       genderFemale: "Female",
 
-      // Settings Modal
+      // Notice / Contact Modal (EN)
+      noticeBtn: "Notice & Join",
+      noticeTitle: "Club Notice & Contact Info",
+      noticeJoinTitle: "Interested in joining our club / tournaments?",
+      noticeJoinDesc: "We welcome table tennis enthusiasts of all skill levels! To register for monthly leagues, join casual practice sessions, or join our community WhatsApp group:",
+      noticeContactPerson: "Contact Person",
+      noticePhone: "Phone / Mobile",
+      noticeWhatsappGroup: "WhatsApp Community Group",
+      noticeJoinWhatsappBtn: "Join WhatsApp Group",
+      noticeCorrectionTitle: "Data Amendment & Admin Support",
+      noticeCorrectionDesc: "If any match score, player rating, or name is inaccurate and needs correction, please leave a message on the Message Board or directly reach out to the system administrator.",
+      noticeAdminContact: "System Admin Contact",
+      noticeCloseBtn: "Got it",
       settingsTitle: "Supabase Database Settings",
       settingsDesc: "Enter your Supabase Project URL and Public Anon Key below. Leaving these blank will use local demo data.",
       projUrlLabel: "Project URL",
@@ -201,7 +213,19 @@ window.i18n = {
       genderMale: "男",
       genderFemale: "女",
 
-      // Settings Modal
+      // Notice / Contact Modal (CN)
+      noticeBtn: "球友公告 & 联系",
+      noticeTitle: "球友会公告 & 联系方式",
+      noticeJoinTitle: "想要加入我们俱乐部 / 积分月赛？",
+      noticeJoinDesc: "热烈欢迎各水平阶段球友交流切磋！如需报名每月积分赛、参加平日约球训练或加入我们的微信/WhatsApp球友群：",
+      noticeContactPerson: "联系人",
+      noticePhone: "联系电话 / 手机",
+      noticeWhatsappGroup: "WhatsApp / 微信球友交流群",
+      noticeJoinWhatsappBtn: "点击加入交流群",
+      noticeCorrectionTitle: "比分纠错 & 系统管理员支持",
+      noticeCorrectionDesc: "若发现任何比赛比分、选手初始积分或姓名有误需要更正修改，请在留言板留言反馈，或直接联系系统管理员协助处理。",
+      noticeAdminContact: "系统管理员",
+      noticeCloseBtn: "我知道了",
       settingsTitle: "Supabase 数据库设置",
       settingsDesc: "在下方填入您的 Supabase 项目 URL 与 Public Anon Key。如果留空，系统将自动使用预置的俱乐部模拟数据。",
       projUrlLabel: "Project URL",

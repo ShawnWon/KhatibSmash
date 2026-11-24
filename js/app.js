@@ -847,6 +847,23 @@ class App {
     }
   }
 
+  // --- NOTICE / CONTACT MODAL LOGIC ---
+  openNoticeModal() {
+    const modal = document.getElementById('notice-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  closeNoticeModal() {
+    const modal = document.getElementById('notice-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
   // --- SETTINGS MODAL LOGIC ---
   openSettingsModal() {
     const modal = document.getElementById('settings-modal');
